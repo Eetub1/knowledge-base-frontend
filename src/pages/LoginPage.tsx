@@ -7,7 +7,7 @@ const LoginPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-  };
+  }
 
   return (
     <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: "80vh" }}>
@@ -28,7 +28,7 @@ const LoginPage = () => {
         </Form>
       </Card>
     </Container>
-  );
-};
+  )
+}
 
-export default LoginPage;
+export default LoginPage
