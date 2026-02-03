@@ -2,7 +2,6 @@ import { Navbar, Container, Nav, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 const Header = ({user, setUser}) => {
-    //jos ei ole käyttäjää niin ei piirretä headeria
     if (!user) return null
 
     const logout = event => {
