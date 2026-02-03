@@ -1,12 +1,23 @@
-import { useState } from 'react'
-import { Form, Button, Container, Card } from 'react-bootstrap'
-//test
-const LoginPage = () => {
+import { useState } from "react"
+import { Form, Button, Container, Card } from "react-bootstrap"
+import { login } from "../services/login.js"
+
+const LoginPage = ({setUser}) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+
+    try {
+      const user = await login({username, password})
+      console.log(user)
+      setUser(user)
+      setUsername("")
+      setPassword("")
+    } catch {
+      console.log("There was an error in login")
+    }
   }
 
   return (
