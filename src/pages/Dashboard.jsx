@@ -1,9 +1,9 @@
 const Dashboard = () => {
-  return (
-    <div>
+    return (
+        <div>
         Morjesta tää on dashboard
-    </div>
-  )
+        </div>
+    )
 }
 
-export default Dashboard;
+export default Dashboard

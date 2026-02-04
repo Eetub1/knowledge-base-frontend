@@ -1,5 +1,5 @@
-import { Navbar, Container, Nav, Button } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Navbar, Container, Nav, Button } from "react-bootstrap"
+import { Link } from "react-router-dom"
 
 const Header = ({user, setUser}) => {
     if (!user) return null
@@ -21,7 +21,7 @@ const Header = ({user, setUser}) => {
 
                     <Nav className="align-items-center">
                         <span className="navbar-text me-3 small">
-                        {user?.username}
+                            {user?.username}
                         </span>
                         <Button onClick={logout} variant="outline-light" size="sm" className="px-3">Logout</Button>
                     </Nav>
