@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Form, Button, Container, Card } from "react-bootstrap"
 import { signUp } from "../services/auth.js"
 
-const SignUpPage = ({setUser}) => {
+const SignUpPage = ({setUser, setMessage}) => {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
 
@@ -12,9 +12,15 @@ const SignUpPage = ({setUser}) => {
 
         try {
             const newUser = await signUp({username, password})
-            setUser(newUser)
+            setUser(newUser)    
+            setUsername("")
+            setPassword("")
+            setMessage("Succesfully signed up and logged in!")
+            setTimeout(() => {
+                setMessage(null)
+            }, 4000)
         } catch {
-            
+            console.log("There was an error in signing up")
         }
     }
 

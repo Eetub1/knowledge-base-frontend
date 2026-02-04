@@ -7,6 +7,5 @@ export const login = async credentials => {
 
 export const signUp = async credentials => {
     const response = await axios.post("http://localhost:5000/api/users", credentials)
-    console.log("It was a success")
     return response.data
 }

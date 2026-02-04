@@ -9,7 +9,7 @@ const Header = ({user, setUser}) => {
     }
 
     return (
-        <Navbar bg="dark" variant="dark" expand="md" className="mb-4 shadow-sm">
+        <Navbar bg="dark" variant="dark" expand="md" className="shadow-sm">
             <Container>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
@@ -17,11 +17,12 @@ const Header = ({user, setUser}) => {
                     <Nav className="me-auto">
                         <Nav.Link as={Link} to="/dashboard">Dashboard</Nav.Link>
                         <Nav.Link as={Link} to="/about">About</Nav.Link>
+                        <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
                     </Nav>
 
                     <Nav className="align-items-center">
                         <span className="navbar-text me-3 small">
-                            {user?.username}
+                            Logged in as {user?.username}
                         </span>
                         <Button onClick={logout} variant="outline-light" size="sm" className="px-3">Logout</Button>
                     </Nav>
