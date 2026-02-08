@@ -1,11 +1,21 @@
 import { Container, Row, Col, Button, Form, Card } from "react-bootstrap"
-import { useState } from "react"
-import { addNoteToUserWithId } from "../services/notes"
+import { useState, useEffect } from "react"
+import { addNoteToUserWithId, getUserNotesById} from "../services/notes"
 
 const Dashboard = ({ user, setMessage }) => {
     const [title, setTitle] = useState("")
     const [noteContent, setNoteContent] = useState("")
     const [isFormVisible, setIsFormVisible] = useState(false)
+    const [recentNotes, setRecentNotes] = useState([])
+
+    useEffect(() => {
+        const fetchNotes = async () => {
+            const notes = await getUserNotesById(user.id)
+            setRecentNotes(notes)
+            console.log(notes)
+        }
+        if (user.id) fetchNotes()
+    }, [])
 
     const handleSubmit = async event => {
         event.preventDefault()
@@ -32,10 +42,6 @@ const Dashboard = ({ user, setMessage }) => {
         } catch {
             console.log("Tapahtui virhe lisättäessä muistiinpanoa")
         }
-    }  
-
-    const showForm = event => {
-        setIsFormVisible(true)
     }
 
     return (
@@ -43,13 +49,16 @@ const Dashboard = ({ user, setMessage }) => {
             <Row className="g-0 h-100">
                 <Col xs={3} md={2} className="bg-dark text-white p-3">
                     <h4>KBase</h4>
-                    <hr />
-                    <p>Links go here</p>
+                    <hr/>
+                    <p>Recent notes</p>
+                    <hr/>
+                    {/*haetaan tähän sivupalkkiin viisi viimeisintä käyttäjän luomaa notea
+                    jos ei ole niin ei renderöidä myöskään Recent notes tekstiä*/}
                 </Col>
 
                 <Col xs={9} md={10} className="bg-light p-4">
                     <h2>Main Dashboard</h2>
-                    <Button onClick={showForm} style={{display: isFormVisible ? "none" : "block"}}>Create a new note</Button>
+                    <Button onClick={() => setIsFormVisible(true)} style={{display: isFormVisible ? "none" : "block"}}>Create a new note</Button>
 
                     <Form style={{display: isFormVisible ? "block" : "none"}} onSubmit={handleSubmit}>
                         <Card style={{width: "400px"}} className="p-4 shadow">
@@ -65,7 +74,6 @@ const Dashboard = ({ user, setMessage }) => {
                             <Button variant="primary" type="submit" className="w-100">Create note</Button>
                         </Card>
                     </Form>
-
                 </Col>
             </Row>
         </Container>

@@ -14,6 +14,11 @@ const LoginPage = ({setUser, setMessage}) => {
             const user = await login({username, password})
             console.log(user)
             setUser(user)
+
+            window.localStorage.setItem(
+                "loggedKBaseUser", JSON.stringify(user)
+            )
+
             setUsername("")
             setPassword("")
             setMessage("Login succesful!")
