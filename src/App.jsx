@@ -11,7 +11,7 @@ import Header from "./components/Header"
 import Message from "./components/Message"
 
 function App() {
-    const [user, setUser] = useState(true)
+    const [user, setUser] = useState(false)
     const [message, setMessage] = useState("")
 
     return (
@@ -22,7 +22,7 @@ function App() {
                 <Route path="/signup" element={!user ? <SignUpPage setUser={setUser} setMessage={setMessage}/> : <Navigate to="/dashboard"/>}/>
                 <Route path="/login" element={!user ? <LoginPage setUser={setUser} setMessage={setMessage}/> : <Navigate to="/dashboard"/>}/>
                 <Route path="/profile" element={user ? <Profile user={user}/> : <Navigate to="/login"/>}/>
-                <Route path="/dashboard" element={user ? <Dashboard/> : <Navigate to="/login"/>}/>
+                <Route path="/dashboard" element={user ? <Dashboard user={user}/> : <Navigate to="/login"/>}/>
                 <Route path="/about" element={user ? <About/> : <Navigate to="/login"/>}/>
                 <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"}/>}/>
             </Routes>

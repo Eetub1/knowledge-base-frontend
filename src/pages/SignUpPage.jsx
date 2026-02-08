@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Form, Button, Container, Card } from "react-bootstrap"
 import { signUp } from "../services/auth.js"
+import { Link } from "react-router-dom"
 
 const SignUpPage = ({setUser, setMessage}) => {
     const [username, setUsername] = useState("")
@@ -40,6 +41,11 @@ const SignUpPage = ({setUser, setMessage}) => {
                     </Form.Group>
 
                     <Button variant="primary" type="submit" className="w-100">Sign up</Button>
+                
+                    <div className="text-center mt-3">
+                        <span>Want to login? </span>
+                        <Link to="/login" style={{textDecoration: "none"}}>Login</Link>
+                    </div>
                 </Form>
             </Card>
         </Container>

@@ -1,6 +1,29 @@
 import { Container, Row, Col, Button, Form, Card } from "react-bootstrap"
+import { useState } from "react"
 
-const Dashboard = () => {
+const Dashboard = ({ user }) => {
+    const [title, setTitle] = useState("")
+    const [noteContent, setNoteContent] = useState("")
+    const [isFormVisible, setIsFormVisible] = useState(false)
+
+    const handleSubmit = event => {
+        event.preventDefault()
+
+        //note tietokantaan käyttäjän id:n perusteella
+        //tässä
+
+        setTitle("")
+        setNoteContent("")
+        setIsFormVisible(false)
+
+        console.log("Käyttäjä: ", user)
+        
+    }  
+
+    const showForm = event => {
+        setIsFormVisible(true)
+    }
+
     return (
         <Container fluid className="vh-100 p-0">
             <Row className="g-0 h-100">
@@ -12,18 +35,20 @@ const Dashboard = () => {
 
                 <Col xs={9} md={10} className="bg-light p-4">
                     <h2>Main Dashboard</h2>
-                    <Button>Create a new note</Button>
+                    <Button onClick={showForm} style={{display: isFormVisible ? "none" : "block"}}>Create a new note</Button>
 
-                    <Form>
-                        <Card style={{ width: "400px"}} className="p-4 shadow">
+                    <Form style={{display: isFormVisible ? "block" : "none"}} onSubmit={handleSubmit}>
+                        <Card style={{width: "400px"}} className="p-4 shadow">
                             <Form.Group className="mb-3">
                                 <Form.Label>Title</Form.Label>
-                                <Form.Control></Form.Control>
+                                <Form.Control value={title} onChange={(event) => setTitle(event.target.value)}></Form.Control>
                             </Form.Group>
 
                             <Form.Group className="mb-3">
-                                <Form.Control placeholder="Your note starts here..." type="text" as="textarea"></Form.Control>
+                                <Form.Control value={noteContent} onChange={(event) => setNoteContent(event.target.value)} placeholder="Your note starts here..." type="text" as="textarea"></Form.Control>
                             </Form.Group>
+
+                            <Button variant="primary" type="submit" className="w-100">Create note</Button>
                         </Card>
                     </Form>
 
