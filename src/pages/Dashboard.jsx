@@ -1,23 +1,37 @@
 import { Container, Row, Col, Button, Form, Card } from "react-bootstrap"
 import { useState } from "react"
+import { addNoteToUserWithId } from "../services/notes"
 
-const Dashboard = ({ user }) => {
+const Dashboard = ({ user, setMessage }) => {
     const [title, setTitle] = useState("")
     const [noteContent, setNoteContent] = useState("")
     const [isFormVisible, setIsFormVisible] = useState(false)
 
-    const handleSubmit = event => {
+    const handleSubmit = async event => {
         event.preventDefault()
 
-        //note tietokantaan käyttäjän id:n perusteella
-        //tässä
+        if (!title || !noteContent) return
 
-        setTitle("")
-        setNoteContent("")
-        setIsFormVisible(false)
+        //folderId on nyt null, mutta tulee tarpeen myöhemmin
+        const dataObject = {
+            "title": title,
+            "content": noteContent,
+            "id": user.id,
+            "folderId": null
+        }
 
-        console.log("Käyttäjä: ", user)
-        
+        try {
+            const createdNote = await addNoteToUserWithId(dataObject)
+            setTitle("")
+            setNoteContent("")
+            setIsFormVisible(false)
+            setMessage(`Succesfully created note: ${createdNote.title}`)
+            setTimeout(() => {
+                setMessage(null)
+            }, 4000)
+        } catch {
+            console.log("Tapahtui virhe lisättäessä muistiinpanoa")
+        }
     }  
 
     const showForm = event => {
