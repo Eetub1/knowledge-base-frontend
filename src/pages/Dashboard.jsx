@@ -1,18 +1,18 @@
 import { Container, Row, Col, Button, Form, Card } from "react-bootstrap"
 import { useState, useEffect } from "react"
-import { addNoteToUserWithId, getUserNotesById} from "../services/notes"
+import { addNoteToUserWithId, getUserNotesById} from "../services/notes.js"
+import RenderRecentNotes from "../components/RenderRecentNotes.jsx"
 
 const Dashboard = ({ user, setMessage }) => {
     const [title, setTitle] = useState("")
     const [noteContent, setNoteContent] = useState("")
     const [isFormVisible, setIsFormVisible] = useState(false)
-    const [recentNotes, setRecentNotes] = useState([])
-
+    const [userNotes, setUserNotes] = useState([])
+    
     useEffect(() => {
         const fetchNotes = async () => {
             const notes = await getUserNotesById(user.id)
-            setRecentNotes(notes)
-            console.log(notes)
+            setUserNotes(notes)
         }
         if (user.id) fetchNotes()
     }, [])
@@ -32,13 +32,12 @@ const Dashboard = ({ user, setMessage }) => {
 
         try {
             const createdNote = await addNoteToUserWithId(dataObject)
+
             setTitle("")
             setNoteContent("")
             setIsFormVisible(false)
             setMessage(`Succesfully created note: ${createdNote.title}`)
-            setTimeout(() => {
-                setMessage(null)
-            }, 4000)
+            setTimeout(() => {setMessage(null)}, 4000)
         } catch {
             console.log("Tapahtui virhe lisättäessä muistiinpanoa")
         }
@@ -50,10 +49,7 @@ const Dashboard = ({ user, setMessage }) => {
                 <Col xs={3} md={2} className="bg-dark text-white p-3">
                     <h4>KBase</h4>
                     <hr/>
-                    <p>Recent notes</p>
-                    <hr/>
-                    {/*haetaan tähän sivupalkkiin viisi viimeisintä käyttäjän luomaa notea
-                    jos ei ole niin ei renderöidä myöskään Recent notes tekstiä*/}
+                    <RenderRecentNotes fiveMostRecent={userNotes.slice(0, 5)}/>
                 </Col>
 
                 <Col xs={9} md={10} className="bg-light p-4">

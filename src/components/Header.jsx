@@ -6,6 +6,7 @@ const Header = ({user, setUser}) => {
 
     const logout = event => {
         setUser(null)
+        localStorage.setItem("loggedKBaseUser", null)
     }
 
     return (
