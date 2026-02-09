@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Container, Row, Col, Button, Form, Card } from "react-bootstrap"
+import { Container, Row, Col, Button, Form, Card, CloseButton } from "react-bootstrap"
 import RenderRecentNotes from "./RenderRecentNotes.jsx"
 import { addNoteToUserWithId } from "../services/notes.js"
 
@@ -36,6 +36,7 @@ const NoteForm = ({ user, userNotes, setMessage }) => {
 
     return (
         <Container fluid className="vh-100 p-0">
+
             <Row className="g-0 h-100">
                 <Col xs={3} md={2} className="bg-dark text-white p-3">
                     <h4>KBase</h4>
@@ -48,7 +49,9 @@ const NoteForm = ({ user, userNotes, setMessage }) => {
                     <Button onClick={() => setIsFormVisible(true)} style={{display: isFormVisible ? "none" : "block"}}>Create a new note</Button>
 
                     <Form style={{display: isFormVisible ? "block" : "none"}} onSubmit={handleSubmit}>
-                        <Card style={{width: "400px"}} className="p-4 shadow">
+                        <Card style={{width: "400px"}} className="p-4 shadow d-flex flex-direction-column">
+                            <CloseButton style={{"marginLeft": "auto"}} variant="red" onClick={() => setIsFormVisible(false)}></CloseButton>
+
                             <Form.Group className="mb-3">
                                 <Form.Label>Title</Form.Label>
                                 <Form.Control value={title} onChange={(event) => setTitle(event.target.value)}></Form.Control>
