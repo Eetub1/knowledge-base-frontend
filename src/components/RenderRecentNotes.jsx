@@ -3,7 +3,7 @@ const RenderRecentNotes = ({ fiveMostRecent }) => {
 
     return (
         <>
-            <h5>Recent notes:</h5>
+            <h5>Recent notes</h5>
             <hr/>
             <div>
                 {fiveMostRecent.map(note => (

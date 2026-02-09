@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { getUserNotesById} from "../services/notes.js"
+import { getUserNotesById, getFoldersByUserId } from "../services/notes.js"
 import { Container, Row, Col, Button } from "react-bootstrap"
 
 import NoteForm from "../components/NoteForm.jsx"
@@ -9,15 +9,19 @@ import DashboardSidebar from "../components/DashboardSidebar.jsx"
 
 const Dashboard = ({ user, setMessage }) => {
     const [userNotes, setUserNotes] = useState([])
+    const [userFolders, setUserFolders] = useState([])
     const [isNoteFormVisible, setIsNoteFormVisible] = useState(false)
     const [isFolderFormVisible, setIsFolderFormVisible] = useState(false)
 
     useEffect(() => {
-        const fetchNotes = async () => {
+        const fetchNotesAndFolders = async () => {
             const notes = await getUserNotesById(user.id)
             setUserNotes(notes)
+
+            const folders = await getFoldersByUserId (user.id)
+            setUserFolders(folders)
         }
-        if (user.id) fetchNotes()
+        if (user.id) fetchNotesAndFolders()
     }, [])
 
     return (
@@ -25,7 +29,7 @@ const Dashboard = ({ user, setMessage }) => {
             <Row className="g-0 h-100">
 
                 <Col xs={3} md={2} className="bg-dark text-white p-3">
-                    <DashboardSidebar userNotes={userNotes}/>
+                    <DashboardSidebar userNotes={userNotes} userFolders={userFolders}/>
                 </Col>
 
                 <Col xs={9} md={10} className="bg-light p-4">
