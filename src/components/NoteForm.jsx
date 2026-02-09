@@ -1,8 +1,8 @@
 import { useState } from "react"
-import { Container, Row, Col, Button, Form, Card, CloseButton } from "react-bootstrap"
+import { Button, Form, Card, CloseButton } from "react-bootstrap"
 import { addNoteToUserWithId } from "../services/notes.js"
 
-const NoteForm = ({ user, setMessage, setIsFormVisible, isFormVisible }) => {
+const NoteForm = ({ user, setMessage, setIsNoteFormVisible, isNoteFormVisible }) => {
     const [title, setTitle] = useState("")
     const [noteContent, setNoteContent] = useState("")
 
@@ -24,7 +24,7 @@ const NoteForm = ({ user, setMessage, setIsFormVisible, isFormVisible }) => {
 
             setTitle("")
             setNoteContent("")
-            setIsFormVisible(false)
+            setIsNoteFormVisible(false)
             setMessage(`Succesfully created note: ${createdNote.title}`)
             setTimeout(() => {setMessage(null)}, 4000)
         } catch {
@@ -33,9 +33,11 @@ const NoteForm = ({ user, setMessage, setIsFormVisible, isFormVisible }) => {
     }
 
     return (
-        <Form style={{display: isFormVisible ? "block" : "none"}} onSubmit={handleSubmit}>
+        <Form 
+            style={{display: isNoteFormVisible ? "block" : "none"}} 
+            onSubmit={handleSubmit}>
             <Card style={{width: "400px"}} className="p-4 shadow d-flex flex-direction-column">
-                <CloseButton style={{"marginLeft": "auto"}} variant="red" onClick={() => setIsFormVisible(false)}></CloseButton>
+                <CloseButton style={{"marginLeft": "auto"}} variant="red" onClick={() => setIsNoteFormVisible(false)}></CloseButton>
 
                 <Form.Group className="mb-3">
                     <Form.Label>Title</Form.Label>

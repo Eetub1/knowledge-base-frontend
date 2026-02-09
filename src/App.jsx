@@ -9,6 +9,7 @@ import Profile from "./pages/Profile"
 
 import Header from "./components/Header"
 import Message from "./components/Message"
+import Footer from "./components/Footer"
 
 function App() {
     const [user, setUser] = useState(false)
@@ -23,7 +24,7 @@ function App() {
     }, [])
 
     return (
-        <>
+        <div style={{"display": "flex", "flexDirection": "column", "minHeight": "100vh"}}>
             <Header user={user} setUser={setUser}/>
             {message && <Message message={message}/>}
             <Routes>
@@ -34,7 +35,8 @@ function App() {
                 <Route path="/about" element={user ? <About/> : <Navigate to="/login"/>}/>
                 <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"}/>}/>
             </Routes>
-        </>
+            <Footer/>
+        </div>
     )
 }
 
