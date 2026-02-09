@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react"
-import { getUserNotesById, getFoldersByUserId } from "../services/notes.js"
+import { getUserNotesById } from "../services/notes.js"
+import { getFoldersByUserId } from "../services/folders.js"
 import { Container, Row, Col, Button } from "react-bootstrap"
 
 import NoteForm from "../components/NoteForm.jsx"
 import FolderForm from "../components/FolderForm.jsx"
 import DashboardSidebar from "../components/DashboardSidebar.jsx"
-
 
 const Dashboard = ({ user, setMessage }) => {
     const [userNotes, setUserNotes] = useState([])
@@ -18,8 +18,9 @@ const Dashboard = ({ user, setMessage }) => {
             const notes = await getUserNotesById(user.id)
             setUserNotes(notes)
 
-            const folders = await getFoldersByUserId (user.id)
+            const folders = await getFoldersByUserId(user.id)
             setUserFolders(folders)
+            console.log(folders)
         }
         if (user.id) fetchNotesAndFolders()
     }, [])
