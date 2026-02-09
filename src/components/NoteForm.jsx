@@ -1,12 +1,10 @@
 import { useState } from "react"
 import { Container, Row, Col, Button, Form, Card, CloseButton } from "react-bootstrap"
-import RenderRecentNotes from "./RenderRecentNotes.jsx"
 import { addNoteToUserWithId } from "../services/notes.js"
 
-const NoteForm = ({ user, userNotes, setMessage }) => {
+const NoteForm = ({ user, setMessage, setIsFormVisible, isFormVisible }) => {
     const [title, setTitle] = useState("")
     const [noteContent, setNoteContent] = useState("")
-    const [isFormVisible, setIsFormVisible] = useState(false)
 
     const handleSubmit = async event => {
         event.preventDefault()
@@ -35,38 +33,22 @@ const NoteForm = ({ user, userNotes, setMessage }) => {
     }
 
     return (
-        <Container fluid className="vh-100 p-0">
+        <Form style={{display: isFormVisible ? "block" : "none"}} onSubmit={handleSubmit}>
+            <Card style={{width: "400px"}} className="p-4 shadow d-flex flex-direction-column">
+                <CloseButton style={{"marginLeft": "auto"}} variant="red" onClick={() => setIsFormVisible(false)}></CloseButton>
 
-            <Row className="g-0 h-100">
-                <Col xs={3} md={2} className="bg-dark text-white p-3">
-                    <h4>KBase</h4>
-                    <hr/>
-                    <RenderRecentNotes fiveMostRecent={userNotes.slice(0, 5)}/>
-                </Col>
+                <Form.Group className="mb-3">
+                    <Form.Label>Title</Form.Label>
+                    <Form.Control value={title} onChange={(event) => setTitle(event.target.value)}></Form.Control>
+                </Form.Group>
 
-                <Col xs={9} md={10} className="bg-light p-4">
-                    <h2>Main Dashboard</h2>
-                    <Button onClick={() => setIsFormVisible(true)} style={{display: isFormVisible ? "none" : "block"}}>Create a new note</Button>
+                <Form.Group className="mb-3">
+                    <Form.Control value={noteContent} onChange={(event) => setNoteContent(event.target.value)} placeholder="Your note starts here..." type="text" as="textarea"></Form.Control>
+                </Form.Group>
 
-                    <Form style={{display: isFormVisible ? "block" : "none"}} onSubmit={handleSubmit}>
-                        <Card style={{width: "400px"}} className="p-4 shadow d-flex flex-direction-column">
-                            <CloseButton style={{"marginLeft": "auto"}} variant="red" onClick={() => setIsFormVisible(false)}></CloseButton>
-
-                            <Form.Group className="mb-3">
-                                <Form.Label>Title</Form.Label>
-                                <Form.Control value={title} onChange={(event) => setTitle(event.target.value)}></Form.Control>
-                            </Form.Group>
-
-                            <Form.Group className="mb-3">
-                                <Form.Control value={noteContent} onChange={(event) => setNoteContent(event.target.value)} placeholder="Your note starts here..." type="text" as="textarea"></Form.Control>
-                            </Form.Group>
-
-                            <Button variant="primary" type="submit" className="w-100">Create note</Button>
-                        </Card>
-                    </Form>
-                </Col>
-            </Row>
-        </Container>
+                <Button variant="primary" type="submit" className="w-100">Create note</Button>
+            </Card>
+        </Form>
     )
 }
 
