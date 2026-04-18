@@ -8,7 +8,7 @@ const RenderRecentNotes = ({ fiveRecentFolders }) => {
             <hr/>
             <div>
                 {fiveRecentFolders.map(folder => (
-                    <p key={folder.id}>{folder.name}</p>
+                    <p style={{cursor: "pointer"}} key={folder.id}>{folder.name}</p>
                 ))}
             </div>
         </>

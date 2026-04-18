@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Button, Form, Card, CloseButton } from "react-bootstrap"
 import { addNoteToUserWithId } from "../services/notes.js"
 
-const NoteForm = ({ user, setMessage, setIsNoteFormVisible, isNoteFormVisible }) => {
+const NoteForm = ({ user, setMessage, setIsNoteFormVisible, isNoteFormVisible, addNote }) => {
     const [title, setTitle] = useState("")
     const [noteContent, setNoteContent] = useState("")
 
@@ -25,6 +25,7 @@ const NoteForm = ({ user, setMessage, setIsNoteFormVisible, isNoteFormVisible })
             setTitle("")
             setNoteContent("")
             setIsNoteFormVisible(false)
+            addNote(createdNote)
             setMessage(`Succesfully created note: ${createdNote.title}`)
             setTimeout(() => {setMessage(null)}, 4000)
         } catch {

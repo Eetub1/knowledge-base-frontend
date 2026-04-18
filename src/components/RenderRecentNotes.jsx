@@ -7,7 +7,7 @@ const RenderRecentNotes = ({ fiveRecentNotes }) => {
             <hr/>
             <div>
                 {fiveRecentNotes.map(note => (
-                    <p key={note.id}>{note.title}</p>
+                    <p style={{cursor: "pointer"}} key={note.id}>{note.title}</p>
                 ))}
             </div>
         </>

@@ -3,7 +3,7 @@ import { useState } from "react"
 
 import { createFolderByUserId } from "../services/folders"
 
-const FolderForm = ({ user, setMessage, setIsFolderFormVisible, isFolderFormVisible }) => {
+const FolderForm = ({ user, setMessage, setIsFolderFormVisible, isFolderFormVisible, addFolder }) => {
     const [folderTitle, setFolderTitle] = useState("")
     
     const onSubmit = async event => {
@@ -21,6 +21,7 @@ const FolderForm = ({ user, setMessage, setIsFolderFormVisible, isFolderFormVisi
             const createdFolder = await createFolderByUserId(dataObject)
             console.log("Luotu folder: ", createdFolder)
             setIsFolderFormVisible(false)
+            addFolder(createdFolder)
             setFolderTitle("")
             setMessage(`Succesfully created folder: `)
             setTimeout(() => {setMessage(null)}, 4000)
