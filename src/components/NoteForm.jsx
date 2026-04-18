@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Button, Form, Card, CloseButton } from "react-bootstrap"
 import { addNoteToUserWithId } from "../services/notes.js"
 
-const NoteForm = ({ user, setMessage, setIsNoteFormVisible, isNoteFormVisible, addNote }) => {
+const NoteForm = ({ user, setMessage, addNote, setWhatToShow }) => {
     const [title, setTitle] = useState("")
     const [noteContent, setNoteContent] = useState("")
 
@@ -23,7 +23,7 @@ const NoteForm = ({ user, setMessage, setIsNoteFormVisible, isNoteFormVisible, a
 
             setTitle("")
             setNoteContent("")
-            setIsNoteFormVisible(false)
+            setWhatToShow("notes")
             addNote(createdNote)
             setMessage(`Succesfully created note: ${createdNote.title}`)
             setTimeout(() => {setMessage(null)}, 4000)
@@ -33,11 +33,11 @@ const NoteForm = ({ user, setMessage, setIsNoteFormVisible, isNoteFormVisible, a
     }
 
     return (
-        <Form 
-            style={{display: isNoteFormVisible ? "block" : "none"}} 
+        <Form
+            className="d-flex justify-content-center align-items-center"
             onSubmit={handleSubmit}>
             <Card style={{width: "400px"}} className="p-4 shadow d-flex flex-direction-column">
-                <CloseButton style={{"marginLeft": "auto"}} variant="red" onClick={() => setIsNoteFormVisible(false)}></CloseButton>
+                <CloseButton style={{"marginLeft": "auto"}} variant="red" onClick={() => setWhatToShow("notes")}></CloseButton>
 
                 <Form.Group className="mb-3">
                     <Form.Label>Title</Form.Label>

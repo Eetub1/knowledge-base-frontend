@@ -3,12 +3,11 @@ import { useState } from "react"
 
 import { createFolderByUserId } from "../services/folders"
 
-const FolderForm = ({ user, setMessage, setIsFolderFormVisible, isFolderFormVisible, addFolder }) => {
+const FolderForm = ({ user, setMessage, addFolder, setWhatToShow }) => {
     const [folderTitle, setFolderTitle] = useState("")
     
     const onSubmit = async event => {
         event.preventDefault()
-        console.log("MOI")
 
         if (!folderTitle) return
 
@@ -20,10 +19,10 @@ const FolderForm = ({ user, setMessage, setIsFolderFormVisible, isFolderFormVisi
         try {
             const createdFolder = await createFolderByUserId(dataObject)
             console.log("Luotu folder: ", createdFolder)
-            setIsFolderFormVisible(false)
+            setWhatToShow("notes")
             addFolder(createdFolder)
             setFolderTitle("")
-            setMessage(`Succesfully created folder: `)
+            setMessage(`Succesfully created folder: ${createdFolder.title}`)
             setTimeout(() => {setMessage(null)}, 4000)
         } catch {
             console.log("Tapahtui virhe luodessa folderia")
@@ -31,11 +30,11 @@ const FolderForm = ({ user, setMessage, setIsFolderFormVisible, isFolderFormVisi
     }
     
     return (
-        <Form 
-            style={{"display" : isFolderFormVisible ? "block" : "none"}}
+        <Form
+            className="d-flex justify-content-center align-items-center"
             onSubmit={onSubmit}>
             <Card style={{width: "400px"}} className="p-4 shadow d-flex flex-direction-column">
-                <CloseButton style={{"marginLeft": "auto"}} variant="red" onClick={() => setIsFolderFormVisible(false)}></CloseButton>
+                <CloseButton style={{"marginLeft": "auto"}} variant="red" onClick={() => setWhatToShow("notes")}></CloseButton>
 
                 <Form.Group className="mb-3">
                     <Form.Label>Folder title</Form.Label>

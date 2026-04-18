@@ -14,7 +14,6 @@ const Dashboard = ({ user, setMessage }) => {
     const [userFolders, setUserFolders] = useState([])
     const [isNoteFormVisible, setIsNoteFormVisible] = useState(false)
     const [isFolderFormVisible, setIsFolderFormVisible] = useState(false)
-    //is empty string or has all notes or folders or editNote
     const [whatToShow, setWhatToShow] = useState("notes")
     const [noteToEdit, setNoteToEdit] = useState(null)
     const [folderId, setFolderId] = useState(noteToEdit && noteToEdit.folder_id ? noteToEdit.folder_id : "")
@@ -27,7 +26,6 @@ const Dashboard = ({ user, setMessage }) => {
         setUserNotes(userNotes.concat(newNote))
     }
 
-    //fetch user notes and folders when component mounts
     useEffect(() => {
         const fetchNotesAndFolders = async () => {
             const notes = await getUserNotesById(user.id)
@@ -54,13 +52,13 @@ const Dashboard = ({ user, setMessage }) => {
                     <main>
                         <div className="d-flex mb-3">
                             <Button 
-                                onClick={() => setIsNoteFormVisible(true)} 
+                                onClick={() => setWhatToShow("noteForm")} 
                                 style={{marginRight: "7px"}}>
                                 Create Note
                             </Button>
 
                             <Button
-                                onClick={() => setIsFolderFormVisible(true)}
+                                onClick={() => setWhatToShow("folderForm")}
                                 style={{marginRight: "7px"}}>
                                 Create Folder
                             </Button>
@@ -78,34 +76,36 @@ const Dashboard = ({ user, setMessage }) => {
                             </Button>
                         </div>
 
-                        <FolderForm
-                            user={user}
-                            setMessage={setMessage}
-                            setIsFolderFormVisible={setIsFolderFormVisible}
-                            isFolderFormVisible={isFolderFormVisible}
-                            addFolder={addFolder}>
-                        </FolderForm>
+                        {whatToShow === "folderForm" && <FolderForm
+                                                            user={user} 
+                                                            setMessage={setMessage}
+                                                            addFolder={addFolder}
+                                                            setWhatToShow={setWhatToShow}/>}
 
-                        <NoteForm
-                            user={user} 
-                            setMessage={setMessage} 
-                            setIsNoteFormVisible={setIsNoteFormVisible}
-                            isNoteFormVisible={isNoteFormVisible}
-                            addNote={addNote}>
-                        </NoteForm>
+                        {whatToShow === "noteForm" && <NoteForm
+                                                            user={user} 
+                                                            setMessage={setMessage}
+                                                            addNote={addNote}
+                                                            setWhatToShow={setWhatToShow}/>}
 
-                        {whatToShow && whatToShow === "notes" && <ShowAllNotes notes={userNotes} setWhatToShow={setWhatToShow} setNoteToEdit={setNoteToEdit}/>}
-                        {whatToShow && whatToShow === "folders" && <ShowAllFolders folders={userFolders}/>}
-                        {whatToShow && whatToShow === "editNote" && <EditNote
-                                                                        key={noteToEdit.id} 
-                                                                        note={noteToEdit} 
-                                                                        userFolders={userFolders} 
-                                                                        folderId={folderId} 
-                                                                        setFolderId={setFolderId}
-                                                                        setWhatToShow={setWhatToShow}
-                                                                        userNotes={userNotes}
-                                                                        setUserNotes={setUserNotes}
-                                                                        setMessage={setMessage}/>}
+                        {whatToShow === "notes" && <ShowAllNotes 
+                                                        notes={userNotes} 
+                                                        setWhatToShow={setWhatToShow} 
+                                                        setNoteToEdit={setNoteToEdit}/>}
+
+                        {whatToShow === "folders" && <ShowAllFolders 
+                                                        folders={userFolders}/>}
+
+                        {whatToShow === "editNote" && <EditNote
+                                                        key={noteToEdit.id} 
+                                                        note={noteToEdit} 
+                                                        userFolders={userFolders} 
+                                                        folderId={folderId} 
+                                                        setFolderId={setFolderId}
+                                                        setWhatToShow={setWhatToShow}
+                                                        userNotes={userNotes}
+                                                        setUserNotes={setUserNotes}
+                                                        setMessage={setMessage}/>}
                     </main>
                 </Col>
             </Row>
