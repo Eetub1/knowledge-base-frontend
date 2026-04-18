@@ -24,7 +24,7 @@ function App() {
     }, [])
 
     return (
-        <div style={{"display": "flex", "flexDirection": "column", "minHeight": "100vh"}}>
+        <div style={{"display": "flex", "flexDirection": "column", "height": "100vh"}}>
             <Header user={user} setUser={setUser}/>
             {message && <Message message={message}/>}
             <Routes>

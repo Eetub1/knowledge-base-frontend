@@ -41,8 +41,8 @@ const Dashboard = ({ user, setMessage }) => {
     }, [])
 
     return (
-        <Container fluid className="vh-100 p-0">
-            <Row className="g-0 h-100">
+        <Container fluid className="p-0 min-vh-100 d-flex flex-column">
+            <Row className="g-0 flex-grow-1">
 
                 <Col xs={3} md={2} className="bg-dark text-white p-3">
                     <DashboardSidebar userNotes={userNotes} userFolders={userFolders}/>
@@ -52,7 +52,6 @@ const Dashboard = ({ user, setMessage }) => {
                     <h2>Main Dashboard</h2>
 
                     <main>
-
                         <div className="d-flex mb-3">
                             <Button 
                                 onClick={() => setIsNoteFormVisible(true)} 
@@ -108,9 +107,7 @@ const Dashboard = ({ user, setMessage }) => {
                                                                         setMessage={setMessage}/>
                         }
                     </main>
-
                 </Col>
-
             </Row>
         </Container>
     )
@@ -210,42 +207,51 @@ const ShowAllFolders = ({ folders }) => {
 
 
 const ShowAllNotes = ({ notes, setWhatToShow, setNoteToEdit }) => {
-    if (notes.length === 0) return null
+    if (notes.length === 0) return <p className="text-muted mt-3">No notes found.</p>
 
     const makeNoteEditable = (note) => {
-        console.log("Tehdään muistiinpano editointikuntoon: ", note)
         setWhatToShow("editNote")
         setNoteToEdit(note)
     }
 
-    console.log(notes)
-
     return (
-        <div
-            style={{marginTop: "10px"}}
-            className="d-flex justify-content-around flex-wrap gap-3 p-3">
+        <Row xs={1} md={2} lg={3} className="g-4 mt-2">
             {notes.map(note => (
-                <Card style={{cursor: "pointer"}} onClick={() => {makeNoteEditable(note)}} key={note.id}>
-                    <Card.Body>
-                        <Card.Title style={{borderBottom: "1px solid #ccc"}}>
-                            {note.title}
-                        </Card.Title>
+                <Col key={note.id} className="d-flex">
+                    <Card 
+                        className="h-100 shadow-sm border-0 w-100" 
+                        style={{ cursor: "pointer", transition: "transform 0.2s" }}
+                        onClick={() => makeNoteEditable(note)}
+                        onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
+                        onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                    >
+                        <Card.Body className="d-flex flex-column">
+                            <Card.Title className="fw-bold border-bottom pb-2 mb-3">
+                                {note.title || "Untitled"}
+                            </Card.Title>
 
-                        <Card.Text>
-                            {note.content}
-                        </Card.Text>
+                            <Card.Text className="flex-grow-1 text-secondary">
+                                {note.content.length > 150 
+                                    ? `${note.content.substring(0, 150)}...` 
+                                    : note.content}
+                            </Card.Text>
 
-                        <Card.Text>
-                            {note.folder ? `Folder: ${note.folder.name}` : ""}
-                        </Card.Text>
+                            <div className="mt-3">
+                                {note.folder && (
+                                    <span className="badge bg-info text-dark mb-2">
+                                        📁 {note.folder.name}
+                                    </span>
+                                )}
+                            </div>
 
-                        <Card.Footer className="d-flex justify-content-center">
-                            Created: {new Date(note.created_at).toLocaleDateString()}
-                        </Card.Footer>
-                    </Card.Body>
-                </Card>
+                            <Card.Footer className="bg-transparent border-0 text-muted small p-0 mt-2">
+                                Created: {new Date(note.created_at).toLocaleDateString()}
+                            </Card.Footer>
+                        </Card.Body>
+                    </Card>
+                </Col>
             ))}
-        </div>
+        </Row>
     )
 }
 
