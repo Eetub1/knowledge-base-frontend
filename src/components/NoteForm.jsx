@@ -11,7 +11,6 @@ const NoteForm = ({ user, setMessage, setIsNoteFormVisible, isNoteFormVisible, a
 
         if (!title || !noteContent) return
 
-        //folderId on nyt null, mutta tulee tarpeen myöhemmin
         const dataObject = {
             "title": title,
             "content": noteContent,
@@ -29,7 +28,7 @@ const NoteForm = ({ user, setMessage, setIsNoteFormVisible, isNoteFormVisible, a
             setMessage(`Succesfully created note: ${createdNote.title}`)
             setTimeout(() => {setMessage(null)}, 4000)
         } catch {
-            console.log("Tapahtui virhe lisättäessä muistiinpanoa")
+            console.log("Error when adding a note")
         }
     }
 

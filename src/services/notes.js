@@ -10,4 +10,7 @@ export const getUserNotesById = async userId => {
     return response.data
 }
 
-//export const getNoteById
+export const updateNoteById = async (editedNote, noteId) => {
+    const response = await axios.put(`http://localhost:5000/api/notes/${noteId}`, editedNote)
+    return response.data
+}

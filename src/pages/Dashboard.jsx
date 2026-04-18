@@ -7,14 +7,17 @@ import NoteForm from "../components/NoteForm.jsx"
 import FolderForm from "../components/FolderForm.jsx"
 import DashboardSidebar from "../components/DashboardSidebar.jsx"
 
+import { updateNoteById } from "../services/notes.js"
+
 const Dashboard = ({ user, setMessage }) => {
     const [userNotes, setUserNotes] = useState([])
     const [userFolders, setUserFolders] = useState([])
     const [isNoteFormVisible, setIsNoteFormVisible] = useState(false)
     const [isFolderFormVisible, setIsFolderFormVisible] = useState(false)
-    //is null or has all notes or folders
+    //is empty string or has all notes or folders or editNote
     const [whatToShow, setWhatToShow] = useState("notes")
     const [noteToEdit, setNoteToEdit] = useState(null)
+    const [folderId, setFolderId] = useState(noteToEdit && noteToEdit.folder_id ? noteToEdit.folder_id : "")
 
     const addFolder = (newFolder) => {
         setUserFolders(userFolders.concat(newFolder))
@@ -94,7 +97,16 @@ const Dashboard = ({ user, setMessage }) => {
 
                         {whatToShow && whatToShow === "notes" && <ShowAllNotes notes={userNotes} setWhatToShow={setWhatToShow} setNoteToEdit={setNoteToEdit}/>}
                         {whatToShow && whatToShow === "folders" && <ShowAllFolders folders={userFolders}/>}
-                        {whatToShow && whatToShow === "editNote" && <EditNote note={noteToEdit}/>}
+                        {whatToShow && whatToShow === "editNote" && <EditNote
+                                                                        note={noteToEdit} 
+                                                                        userFolders={userFolders} 
+                                                                        folderId={folderId} 
+                                                                        setFolderId={setFolderId}
+                                                                        setWhatToShow={setWhatToShow}
+                                                                        userNotes={userNotes}
+                                                                        setUserNotes={setUserNotes}
+                                                                        setMessage={setMessage}/>
+                        }
                     </main>
 
                 </Col>
@@ -105,27 +117,66 @@ const Dashboard = ({ user, setMessage }) => {
 }
 
 
-const EditNote = ({ note }) => {
+const EditNote = ({ note, userFolders, folderId, setFolderId, setWhatToShow, userNotes, setUserNotes, setMessage }) => {
     if (!note) return null
 
-    const handleSubmit = event => {
+    const [title, setTitle] = useState(note.title)
+    const [content, setContent] = useState(note.content)
+
+    const handleSubmit = async event => {
         event.preventDefault()
         console.log("Tallenna muistiinpanoon tehdyt muutokset: ", note)
+
+        const noteId = note.id
+
+        const editedNote = {
+            ...note, 
+            content: content,
+            title: title,
+            folder_id: folderId ? folderId : null
+        }
+
+        try {
+            const editedNoteFromBackend = await updateNoteById(editedNote, noteId)
+
+            const updatedNotes = userNotes.map(note => note.id === noteId ? editedNoteFromBackend : note)
+            setUserNotes(updatedNotes)
+            setWhatToShow("")
+            setMessage("Note edited succesfully!")
+            setTimeout(() => {setMessage(null)}, 4000)
+        } catch (error) {
+            console.error("Error when editing note:", error.message)
+        }
     }
 
     return (
         <Form 
             onSubmit={handleSubmit}>
             <Card style={{width: "400px"}} className="p-4 shadow d-flex flex-direction-column">
-                <CloseButton style={{"marginLeft": "auto"}} variant="red"></CloseButton>
+                <CloseButton onClick={() => setWhatToShow("")} style={{"marginLeft": "auto"}} variant="red"></CloseButton>
 
                 <Form.Group className="mb-3">
                     <Form.Label>Title</Form.Label>
-                    <Form.Control value={note.title}></Form.Control>
+                    <Form.Control value={title} onChange={(event) => setTitle(event.target.value)}></Form.Control>
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                    <Form.Control type="text" as="textarea" value={note.content}></Form.Control>
+                    <Form.Label>Folder</Form.Label>
+                    <Form.Select 
+                        value={folderId} 
+                        onChange={(e) => setFolderId(e.target.value)}>
+                        <option value="">No Folder (Unassigned)</option>
+                        {userFolders.map(folder => (
+                            <option key={folder.id} value={folder.id}>
+                                {folder.name}
+                            </option>
+                        ))}
+                    </Form.Select>
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                    <Form.Label>Content</Form.Label>
+                    <Form.Control type="text" as="textarea" value={content} onChange={(event) => setContent(event.target.value)}></Form.Control>
                 </Form.Group>
 
                 <Button variant="primary" type="submit" className="w-100">Confirm Changes</Button>
