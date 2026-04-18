@@ -104,8 +104,7 @@ const Dashboard = ({ user, setMessage }) => {
                                                                         setWhatToShow={setWhatToShow}
                                                                         userNotes={userNotes}
                                                                         setUserNotes={setUserNotes}
-                                                                        setMessage={setMessage}/>
-                        }
+                                                                        setMessage={setMessage}/>}
                     </main>
                 </Col>
             </Row>
@@ -138,7 +137,7 @@ const EditNote = ({ note, userFolders, folderId, setFolderId, setWhatToShow, use
 
             const updatedNotes = userNotes.map(note => note.id === noteId ? editedNoteFromBackend : note)
             setUserNotes(updatedNotes)
-            setWhatToShow("")
+            setWhatToShow("notes")
             setMessage("Note edited succesfully!")
             setTimeout(() => {setMessage(null)}, 4000)
         } catch (error) {
@@ -148,9 +147,10 @@ const EditNote = ({ note, userFolders, folderId, setFolderId, setWhatToShow, use
 
     return (
         <Form 
+            className="d-flex justify-content-center align-items-center"
             onSubmit={handleSubmit}>
             <Card style={{width: "400px"}} className="p-4 shadow d-flex flex-direction-column">
-                <CloseButton onClick={() => setWhatToShow("")} style={{"marginLeft": "auto"}} variant="red"></CloseButton>
+                <CloseButton onClick={() => setWhatToShow("notes")} style={{"marginLeft": "auto"}} variant="red"></CloseButton>
 
                 <Form.Group className="mb-3">
                     <Form.Label>Title</Form.Label>
