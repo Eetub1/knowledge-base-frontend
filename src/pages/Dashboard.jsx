@@ -45,7 +45,7 @@ const Dashboard = ({ user, setMessage }) => {
             <Row className="g-0 flex-grow-1">
 
                 <Col xs={3} md={2} className="bg-dark text-white p-3">
-                    <DashboardSidebar userNotes={userNotes} userFolders={userFolders}/>
+                    <DashboardSidebar userNotes={userNotes} userFolders={userFolders} setNoteToEdit={setNoteToEdit} setWhatToShow={setWhatToShow}/>
                 </Col>
 
                 <Col xs={9} md={10} className="bg-light p-4">
@@ -97,6 +97,7 @@ const Dashboard = ({ user, setMessage }) => {
                         {whatToShow && whatToShow === "notes" && <ShowAllNotes notes={userNotes} setWhatToShow={setWhatToShow} setNoteToEdit={setNoteToEdit}/>}
                         {whatToShow && whatToShow === "folders" && <ShowAllFolders folders={userFolders}/>}
                         {whatToShow && whatToShow === "editNote" && <EditNote
+                                                                        key={noteToEdit.id} 
                                                                         note={noteToEdit} 
                                                                         userFolders={userFolders} 
                                                                         folderId={folderId} 

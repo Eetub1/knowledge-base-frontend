@@ -1,4 +1,4 @@
-const RenderRecentNotes = ({ fiveRecentNotes }) => {
+const RenderRecentNotes = ({ fiveRecentNotes, setNoteToEdit, setWhatToShow }) => {
     if (fiveRecentNotes.length === 0) return null
 
     return (
@@ -7,7 +7,10 @@ const RenderRecentNotes = ({ fiveRecentNotes }) => {
             <hr/>
             <div>
                 {fiveRecentNotes.map(note => (
-                    <p style={{cursor: "pointer"}} key={note.id}>{note.title}</p>
+                    <p onClick={() => {
+                        setNoteToEdit(note)
+                        setWhatToShow("editNote")
+                    }} style={{cursor: "pointer"}} key={note.id}>{note.title}</p>
                 ))}
             </div>
         </>
