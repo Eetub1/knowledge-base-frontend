@@ -276,6 +276,10 @@ const ShowNotes = ({ notes, setWhatToShow, setNoteToEdit, setUserNotes, folderId
         event.stopPropagation()
         console.log(noteId)
 
+        if(!window.confirm("Are you sure you want to delete this note?")) {
+            return
+        }
+
         try {
             await deleteNoteById(noteId)
             const newNotes = notes.filter(note => note.id !== noteId)
