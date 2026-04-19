@@ -7,16 +7,17 @@ import NoteForm from "../components/NoteForm.jsx"
 import FolderForm from "../components/FolderForm.jsx"
 import DashboardSidebar from "../components/DashboardSidebar.jsx"
 
-import { updateNoteById } from "../services/notes.js"
+import { updateNoteById, deleteNoteById } from "../services/notes.js"
 
 const Dashboard = ({ user, setMessage }) => {
     const [userNotes, setUserNotes] = useState([])
     const [userFolders, setUserFolders] = useState([])
-    const [isNoteFormVisible, setIsNoteFormVisible] = useState(false)
-    const [isFolderFormVisible, setIsFolderFormVisible] = useState(false)
     const [whatToShow, setWhatToShow] = useState("notes")
     const [noteToEdit, setNoteToEdit] = useState(null)
     const [folderId, setFolderId] = useState(noteToEdit && noteToEdit.folder_id ? noteToEdit.folder_id : "")
+
+    //with this you can find the name of a folder based on its id
+    const [folderIdToName, setFolderIdToName] = useState({})
 
     const addFolder = (newFolder) => {
         setUserFolders(userFolders.concat(newFolder))
@@ -34,6 +35,12 @@ const Dashboard = ({ user, setMessage }) => {
             const folders = await getFoldersByUserId(user.id)
             setUserFolders(folders)
             console.log(folders)
+
+            const mapping = {}
+            folders.forEach(folder => {
+                mapping[folder.id] = folder.name
+            })
+            setFolderIdToName(mapping)
         }
         if (user.id) fetchNotesAndFolders()
     }, [])
@@ -43,7 +50,12 @@ const Dashboard = ({ user, setMessage }) => {
             <Row className="g-0 flex-grow-1">
 
                 <Col xs={3} md={2} className="bg-dark text-white p-3">
-                    <DashboardSidebar userNotes={userNotes} userFolders={userFolders} setNoteToEdit={setNoteToEdit} setWhatToShow={setWhatToShow}/>
+                    <DashboardSidebar 
+                        userNotes={userNotes} 
+                        userFolders={userFolders} 
+                        setNoteToEdit={setNoteToEdit} 
+                        setWhatToShow={setWhatToShow}
+                        setFolderId={setFolderId}/>
                 </Col>
 
                 <Col xs={9} md={10} className="bg-light p-4">
@@ -88,13 +100,17 @@ const Dashboard = ({ user, setMessage }) => {
                                                             addNote={addNote}
                                                             setWhatToShow={setWhatToShow}/>}
 
-                        {whatToShow === "notes" && <ShowAllNotes 
+                        {whatToShow === "notes" && <ShowNotes 
                                                         notes={userNotes} 
                                                         setWhatToShow={setWhatToShow} 
-                                                        setNoteToEdit={setNoteToEdit}/>}
+                                                        setNoteToEdit={setNoteToEdit}
+                                                        setUserNotes={setUserNotes}
+                                                        folderIdToName={folderIdToName}/>}
 
-                        {whatToShow === "folders" && <ShowAllFolders 
-                                                        folders={userFolders}/>}
+                        {whatToShow === "folders" && <ShowFolders 
+                                                        folders={userFolders}
+                                                        setWhatToShow={setWhatToShow}
+                                                        setFolderId={setFolderId}/>}
 
                         {whatToShow === "editNote" && <EditNote
                                                         key={noteToEdit.id} 
@@ -106,6 +122,13 @@ const Dashboard = ({ user, setMessage }) => {
                                                         userNotes={userNotes}
                                                         setUserNotes={setUserNotes}
                                                         setMessage={setMessage}/>}
+                        {whatToShow === "showFolderNotes" && <ShowFolderNotes 
+                                                                folderId={folderId} 
+                                                                userNotes={userNotes} 
+                                                                setWhatToShow={setWhatToShow} 
+                                                                setNoteToEdit={setNoteToEdit} 
+                                                                setUserNotes={setUserNotes} 
+                                                                folderIdToName={folderIdToName}/>}
                     </main>
                 </Col>
             </Row>
@@ -122,7 +145,6 @@ const EditNote = ({ note, userFolders, folderId, setFolderId, setWhatToShow, use
 
     const handleSubmit = async event => {
         event.preventDefault()
-        console.log("Tallenna muistiinpanoon tehdyt muutokset: ", note)
 
         const noteId = note.id
 
@@ -184,17 +206,27 @@ const EditNote = ({ note, userFolders, folderId, setFolderId, setWhatToShow, use
 }
 
 
-const ShowAllFolders = ({ folders }) => {
+const ShowFolders = ({ folders, setWhatToShow, setFolderId }) => {
     if (folders.length === 0) return null
 
     console.log(folders)
+
+    const showFolderNotes = (folderId) => {
+        setWhatToShow("showFolderNotes")
+        setFolderId(folderId)
+    }
 
     return (
         <div
             style={{marginTop: "10px"}}
             className="d-flex justify-content-start flex-wrap gap-3 p-3">
             {folders.map(folder => (
-                <Card key={folder.id}>
+                <Card
+                    style={{cursor: "pointer"}}
+                    onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.07)'}
+                    onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                    onClick={() => {showFolderNotes(folder.id)}} 
+                    key={folder.id}>
                     <Card.Body>
                         <Card.Title>
                             {folder.name}
@@ -207,12 +239,50 @@ const ShowAllFolders = ({ folders }) => {
 }
 
 
-const ShowAllNotes = ({ notes, setWhatToShow, setNoteToEdit }) => {
+const ShowFolderNotes = ({ folderId, userNotes, setWhatToShow, setNoteToEdit, setUserNotes, folderIdToName }) => {
+    const notesInFolder = userNotes.filter(note => note.folder_id === folderId)
+
+    if (notesInFolder.length === 0) {
+        return (<div>
+            <p className="text-muted mt-3">No notes found in this folder. <Button onClick={() => setWhatToShow("notes")}>Go back to all notes?</Button></p>
+        </div>)
+    }
+    
+
+    return (
+        <div>
+            {notesInFolder.length} notes in this folder.
+            <ShowNotes 
+                notes={notesInFolder} 
+                setWhatToShow={setWhatToShow} 
+                setNoteToEdit={setNoteToEdit} 
+                setUserNotes={setUserNotes}
+                folderIdToName={folderIdToName}/>
+        </div>
+    )
+}
+
+
+const ShowNotes = ({ notes, setWhatToShow, setNoteToEdit, setUserNotes, folderIdToName }) => {
     if (notes.length === 0) return <p className="text-muted mt-3">No notes found.</p>
 
     const makeNoteEditable = (note) => {
         setWhatToShow("editNote")
         setNoteToEdit(note)
+    }
+
+    const deleteNote = async (event, noteId) => {
+        console.log(event.target)
+        event.stopPropagation()
+        console.log(noteId)
+
+        try {
+            await deleteNoteById(noteId)
+            const newNotes = notes.filter(note => note.id !== noteId)
+            setUserNotes(newNotes)
+        } catch (error) {
+            console.log(`Error while deleting a note: ${error.message}`)
+        }
     }
 
     return (
@@ -224,23 +294,22 @@ const ShowAllNotes = ({ notes, setWhatToShow, setNoteToEdit }) => {
                         style={{ cursor: "pointer", transition: "transform 0.2s" }}
                         onClick={() => makeNoteEditable(note)}
                         onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
-                        onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                    >
+                        onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
+
+                        <CloseButton style={{"marginLeft": "auto"}} variant="red" onClick={(event) => {deleteNote(event, note.id)}}></CloseButton>
                         <Card.Body className="d-flex flex-column">
                             <Card.Title className="fw-bold border-bottom pb-2 mb-3">
                                 {note.title || "Untitled"}
                             </Card.Title>
 
                             <Card.Text className="flex-grow-1 text-secondary">
-                                {note.content.length > 150 
-                                    ? `${note.content.substring(0, 150)}...` 
-                                    : note.content}
+                                {note.content.length > 150 ? `${note.content.substring(0, 150)}...` : note.content}
                             </Card.Text>
 
                             <div className="mt-3">
-                                {note.folder && (
+                                {note.folder_id && (
                                     <span className="badge bg-info text-dark mb-2">
-                                        📁 {note.folder.name}
+                                        📁 {folderIdToName[note.folder_id]}
                                     </span>
                                 )}
                             </div>
